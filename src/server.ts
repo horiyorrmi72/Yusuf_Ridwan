@@ -9,16 +9,18 @@ const { port } = configVariables;
 
 const app = express();
 app.use(express.json());
-app.use(wrappedResponse)
+app.use(wrappedResponse);
 
 app.use('/api', routes)
 
 app.get('/queue-health', async (req: Request, res: Response) => {
     try {
         const queueHealthy = await checkQueueHealth();
-        res.json({
-            status: 'ok',
-            queueHealthy,
+        if (!queueHealthy) {
+            return res.fail('Queue disconnected', 503);
+        }
+        res.success('ok', {
+            RabbitMqHealthy: queueHealthy,
             upTime: process.uptime(),
 
         });
@@ -33,12 +35,9 @@ app.get('/health', async (req: Request, res: Response) => {
             .then(() => true)
             .catch(() => false);
         const queueHealthy = await checkQueueHealth();
-        res.json({
-            status: 'ok',
-            dbHealthy,
-            queueHealthy,
+        res.success('ok', {
+            databaseHealthy: dbHealthy, RabbitMqHealthy: queueHealthy,
             upTime: process.uptime(),
-
         });
     } catch (error) {
         res.fail('health check failed', 500)
