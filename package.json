@@ -6,6 +6,7 @@
   "author": "yusuf ridwan",
   "main": "dist/server.js",
   "scripts": {
+    "migrate": "sequelize db:migrate",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
@@ -25,6 +26,7 @@
     "@types/node": "^24.6.2",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "sequelize-cli": "^6.6.1"
   }
 }
