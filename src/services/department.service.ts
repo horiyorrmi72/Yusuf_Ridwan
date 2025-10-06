@@ -36,7 +36,7 @@ class DepartmentService {
     }
 
     /**
-     * Get employees by departmentId (with pagination support)
+     * Get employees by departmentId (with pagina
      */
     async getEmployeesByDepartmentId(departmentId: number, page = 1, limit = 20) {
         const transaction: Transaction = await this.sequelize.transaction();
@@ -51,7 +51,7 @@ class DepartmentService {
             };
         } catch (err) {
             await transaction.rollback();
-            console.error('Failed to get employees by department:', err);
+            //console.error('Failed to get employees by department:', err);
             throw err;
         }
     }
