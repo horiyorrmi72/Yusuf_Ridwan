@@ -7,7 +7,6 @@ interface IDepartmentData {
 }
 
 export interface IDepartmentCreation extends Optional<IDepartmentData, "id" | "createdAt"> { }
-
 export class Department extends Model<IDepartmentData, IDepartmentCreation>
     implements IDepartmentData {
     public id!: number;

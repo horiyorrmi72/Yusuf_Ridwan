@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 
-export type LeaveStatus = "PENDING" | "APPROVED" | "REJECTED" | "PENDING_APPROVAL";
+export type LeaveStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 interface ILeaveRequestData {
     id: number;
@@ -50,7 +50,7 @@ export default (sequelize: Sequelize) => {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM("PENDING", "APPROVED", "REJECTED", "PENDING_APPROVAL"),
+                type: DataTypes.ENUM("PENDING", "APPROVED", "REJECTED"),
                 allowNull: false,
             },
             createdAt: {

@@ -6,7 +6,7 @@ interface IProcessedMessageData {
     processedAt: Date;
 }
 
-interface IProcessedMessageCreation
+export interface IProcessedMessageCreation
     extends Optional<IProcessedMessageData, "id" | "processedAt"> { }
 
 export class ProcessedMessage
