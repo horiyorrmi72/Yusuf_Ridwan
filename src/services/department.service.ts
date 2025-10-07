@@ -23,9 +23,13 @@ class DepartmentService {
     /**
      * Create a new department
      */
-    async createDepartment(data: any) {
+    async createDepartment(data: any): Promise<{ exists: true } | any> {
         const transaction: Transaction = await this.sequelize.transaction();
         try {
+            const existingDepartment = await this.departmentRepo.findByName(data.name);
+            if (existingDepartment) {
+                return { exists: true }
+            }
             const department = await this.departmentRepo.create(data, transaction);
             await transaction.commit();
             return department;
@@ -44,10 +48,10 @@ class DepartmentService {
             const { count, rows } = await this.employeeRepo.listByDepartment(departmentId, { page, limit });
             await transaction.commit();
             return {
+                employees: rows,
                 total: count,
                 page,
                 limit,
-                employees: rows,
             };
         } catch (err) {
             await transaction.rollback();
