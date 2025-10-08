@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
 export function wrappedResponse(req: Request, res: Response, next: NextFunction): void {
-    res.success = function (data: any, meta: Record<string, any> = {}) {
-        res.status(200).json({ success: true, data, meta });
+    res.success = function (data: any, meta: Record<string, any> = {}, status = 200) {
+        res.status(status).json({ success: true, data, meta });
     };
 
     res.fail = function (message: string, status = 400) {
@@ -15,7 +15,7 @@ export function wrappedResponse(req: Request, res: Response, next: NextFunction)
 declare global {
     namespace Express {
         interface Response {
-            success: (data: any, meta?: Record<string, any>) => void;
+            success: (data: any, meta?: Record<string, any>, status?: number) => void;
             fail: (message: string, status?: number) => void;
         }
     }

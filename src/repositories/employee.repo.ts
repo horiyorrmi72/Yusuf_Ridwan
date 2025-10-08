@@ -48,6 +48,16 @@ class EmployeeRepo {
         });
     }
 
+    /**find employee by unique data other than id */
+    async existsByField(field: string, value: string | number): Promise<boolean> {
+        const count = await this.EmployeeModel.count({
+            where: { [field]: value },
+        });
+        return count > 0;
+    }
+
+
+
     /**
      * List employees by department
      */

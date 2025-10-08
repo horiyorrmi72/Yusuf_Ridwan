@@ -14,6 +14,9 @@ class EmpoloyeeController {
     async create(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const employee = await this.service.createEmployee(req.body);
+            if ('exists' in employee && employee.exists) {
+                return res.fail('Employee already exist', 409)
+            }
             res.success(employee, { message: 'Employee created successfully' })
         } catch (err) {
             next(err);

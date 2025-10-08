@@ -16,7 +16,7 @@ class DepartmentController {
                 return res.fail('Department already exists', 409);
             }
             const resPayload = { "departmentName": department.name, id: department.id }
-            res.success({ resPayload }, {
+            res.success(resPayload, {
                 message: 'Department Created Successfully.',
                 createdAt: department.createdAt,
             }, 201)
@@ -33,7 +33,13 @@ class DepartmentController {
             const limit = req.query.limit ? Number(req.query.limit) : 20;
 
             const department = await this.service.getEmployeesByDepartmentId(id, page, limit);
-            res.success({ departmentId: id, employees: department.employees }, {
+            if ('empty' in department && department.empty) {
+                return res.success(
+                    { departmentId: id, employees: [] },
+                    { total: 0, page, limit }
+                );
+            }
+            return res.success({ departmentId: id, employees: department.employees }, {
                 total: department.total,
                 page: department.page,
                 limit: department.limit

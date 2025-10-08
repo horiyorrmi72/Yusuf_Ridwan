@@ -4,6 +4,7 @@ import { ExponentialRetryStrategy } from '../strategies/retryStrategy';
 import LeaveRequestRepo from '../repositories/leaveRequest.repo';
 import ProcessedMessageRepo from '../repositories/processedMessage.repo';
 import { sequelize } from '../configs/db';
+import logger from '../utils/logger';
 
 export default class LeaveWorker {
     constructor(url, leaveRepo, processedRepo) {
@@ -18,6 +19,7 @@ export default class LeaveWorker {
 
     async connect() {
         this.conn = await amqp.connect(this.url);
+        logger.info('consumer conn:', this.conn)
         this.ch = await this.conn.createChannel();
         await this.ch.assertExchange(this.exchange, 'topic', { durable: true });
         await this.ch.assertQueue(this.queue, { durable: true });
@@ -32,7 +34,7 @@ export default class LeaveWorker {
             try {
                 const alreadyProcessed = await this.processedRepo.findByMessageId(messageId);
                 if (alreadyProcessed) {
-                    console.log(`[Worker] Message ${messageId} already processed.`);
+                    logger.info(`[Worker] Message ${messageId} already processed.`);
                     return this.ch.ack(msg);
                 }
 
@@ -50,10 +52,14 @@ export default class LeaveWorker {
     }
 
     async processLeave(leave) {
-        const { id, days } = leave;
+        logger.info('leave info:', leave)
+        const { leaveId, days } = leave;
+        if (!leaveId) {
+            throw new Error(`Missing leaveId in message: ${JSON.stringify(leave)}`);
+        }
         const status = days <= 2 ? 'APPROVED' : 'PENDING_APPROVAL';
 
-        await this.leaveRepo.updateStatus(id, status);
-        console.log(`[Worker] Leave #${id} set to ${status}`);
+        await this.leaveRepo.updateStatus(leaveId, status);
+        logger.info(`[Worker] Leave #${leaveId} set to ${status}`);
     }
 }

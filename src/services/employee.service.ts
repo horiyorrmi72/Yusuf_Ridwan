@@ -19,9 +19,13 @@ class EmployeeService {
     /**
      * Create an employee under a department.
      */
-    async createEmployee(data: any) {
+    async createEmployee(data: any): Promise<{ exists: true } | any> {
         const transaction: Transaction = await this.sequelize.transaction();
         try {
+            const existingEmployee = await this.employeeRepo.existsByField('email', data.email);
+            if (existingEmployee) {
+                return { exists: true };
+            }
             const employee = await this.employeeRepo.create(data, transaction);
             await transaction.commit();
             return employee;

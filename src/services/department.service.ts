@@ -42,11 +42,13 @@ class DepartmentService {
     /**
      * Get employees by departmentId (with pagina
      */
-    async getEmployeesByDepartmentId(departmentId: number, page = 1, limit = 20) {
+    async getEmployeesByDepartmentId(departmentId: number, page = 1, limit = 20): Promise<{ empty: true } | any> {
         const transaction: Transaction = await this.sequelize.transaction();
         try {
             const { count, rows } = await this.employeeRepo.listByDepartment(departmentId, { page, limit });
-            await transaction.commit();
+            if (!rows || rows.length === 0) {
+                return { empty: true }
+            }
             return {
                 employees: rows,
                 total: count,

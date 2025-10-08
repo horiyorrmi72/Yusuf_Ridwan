@@ -1,4 +1,5 @@
 import amqp from 'amqplib';
+import logger from '../utils/logger';
 
 export default class Producer {
     private url: string;
@@ -7,6 +8,7 @@ export default class Producer {
     private readonly exchange = 'leave-exchange';
 
     constructor(url: string) {
+        // logger.info('que prod url:', url)
         this.url = url;
     }
 
@@ -15,10 +17,12 @@ export default class Producer {
 
         this.conn = await amqp.connect(this.url);
         this.ch = await this.conn.createChannel();
+        // logger.info('que conn:', this.conn)
+        // logger.info('que ch:', this.ch)
         await this.ch.assertExchange(this.exchange, 'topic', { durable: true });
 
         this.conn.on('error', (err: any) => {
-            console.error('[Producer] Connection error:', err);
+            logger.error('[Producer] Connection error:', err);
             this.conn = undefined;
             this.ch = undefined;
         });
