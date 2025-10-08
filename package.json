@@ -10,6 +10,7 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "worker": "ts-node src/queue/startWorker.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -18,7 +19,8 @@
     "express": "^5.1.0",
     "mysql2": "^3.5.2",
     "sequelize": "^6.33.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.7",
@@ -27,6 +29,7 @@
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "sequelize-cli": "^6.6.1"
+    "sequelize-cli": "^6.6.1",
+    "@types/winston": "^2.4.4"
   }
 }
